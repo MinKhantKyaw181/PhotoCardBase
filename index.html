@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>AR Motherboard with Labels</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+<style>
+body{margin:0;background:#000;font-family:Arial}
+#startScreen{
+  position:fixed; inset:0;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  z-index:10; color:white
+}
+#startBtn{
+  padding:16px 36px;
+  font-size:18px;
+  border:none;
+  border-radius:30px;
+  background:#00ffcc;
+  font-weight:bold
+}
+a-scene{display:none}
+</style>
+</head>
+
+<body>
+
+<div id="startScreen">
+  <h2>🧩 Motherboard AR</h2>
+  <button id="startBtn">Start AR</button>
+</div>
+
+<a-scene id="scene"
+  mindar-image="imageTargetSrc: targets.mind;"
+  vr-mode-ui="enabled:false"
+  device-orientation-permission-ui="enabled:false">
+
+<a-assets>
+  <a-asset-item id="mbModel" src="models/motherboard.glb"></a-asset-item>
+  <audio id="mbSound" src="audio/motherboard.mp3"></audio>
+</a-assets>
+
+<a-camera
+  look-controls="enabled:false"
+  cursor="rayOrigin: mouse"
+  raycaster="objects: .clickable">
+</a-camera>
+
+<!-- ================= MOTHERBOARD TARGET ================= -->
+<a-entity class="target" mindar-image-target="targetIndex:1" data-sound="mbSound">
+
+  <!-- Motherboard model (TOP VIEW) -->
+  <a-gltf-model
+    class="clickable"
+    src="#mbModel"
+    position="0 0 0"
+    rotation="90 0 0"
+    scale="0.3 0.3 0.3">
+  </a-gltf-model>
+
+  <!-- ================= CPU LABEL ================= -->
+  <!-- ================= CPU LABEL ================= -->
+<a-entity position="-0.25 0.05 0.1">
+
+  <!-- Arrow body -->
+  <a-cylinder
+    height="0.8"
+    radius="0.006"
+    color="yellow"
+    rotation="-90 0 0"
+    position="0.4 0.06 0.15">
+  </a-cylinder>
+
+  <!-- Arrow head (BOX) -->
+  <a-box
+    width="0.01"
+    height="0.02"
+    depth="0.09"
+    color="yellow"
+    rotation="90 0 0"
+    position="0.4 0.1 0.53">
+  </a-box>
+
+  <!-- LABEL (same line with box) -->
+  <a-text
+    value="CPU"
+    color="yellow"
+    align="center"
+    anchor="center"
+    width="0.8"
+    rotation="0 0 90"
+    position="0.38 0.2 0.65">
+  </a-text>
+
+</a-entity>
+
+
+  <!-- ================= BATTERY LABEL ================= -->
+  <!-- <a-entity position="0.22 0.05 -0.05">
+    <a-cylinder height="0.12" radius="0.003" color="cyan"
+      rotation="90 0 0" position="0 0.06 0"></a-cylinder>
+    <a-cone radius-bottom="0.01" height="0.03" color="cyan"
+      position="0 0.12 0"></a-cone>
+    <a-text value="Battery"
+      color="cyan"
+      align="center"
+      width="0.6"
+      position="0 0.17 0">
+    </a-text>
+  </a-entity> -->
+
+  <!-- ================= RAM SLOT LABEL ================= -->
+  <!-- <a-entity position="-0.05 0.05 -0.25">
+    <a-cylinder height="0.14" radius="0.003" color="lime"
+      rotation="90 0 0" position="0 0.07 0"></a-cylinder>
+    <a-cone radius-bottom="0.01" height="0.03" color="lime"
+      position="0 0.14 0"></a-cone>
+    <a-text value="RAM Slot"
+      color="lime"
+      align="center"
+      width="0.7"
+      position="0 0.2 0">
+    </a-text>
+  </a-entity> -->
+
+</a-entity>
+<!-- ===================================================== -->
+
+</a-scene>
+
+<script>
+const startBtn = document.getElementById("startBtn");
+const startScreen = document.getElementById("startScreen");
+const scene = document.getElementById("scene");
+const audio = document.getElementById("mbSound");
+
+startBtn.onclick = async () => {
+  audio.muted = true;
+  try { await audio.play(); } catch(e){}
+  audio.pause();
+  audio.currentTime = 0;
+  audio.muted = false;
+
+  startScreen.style.display = "none";
+  scene.style.display = "block";
+  await scene.systems["mindar-image-system"].start();
+};
+
+// sound
+document.querySelector(".target").addEventListener("targetFound",()=>{
+  audio.play().catch(()=>{});
+});
+document.querySelector(".target").addEventListener("targetLost",()=>{
+  audio.pause(); audio.currentTime=0;
+});
+</script>
+
+</body>
+</html>
