@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve-https": "npx --yes http-server . -S -C \"192.168.1.6+1.pem\" -K \"192.168.1.6+1-key.pem\" -p 8443 -a 0.0.0.0"
   },
   "keywords": [],
   "author": "",
