@@ -61,6 +61,7 @@ a-scene{display:none}
   <audio id="sound0" src="audio/arduino.mp3"></audio>
   <audio id="sound1" src="audio/breadboard.mp3"></audio>
   <audio id="sound2" src="audio/cpu.mp3"></audio>
+  <audio id="soundGpu" src="audio/gpu.mp3"></audio>
   <audio id="sound3" src="audio/hdd.mp3"></audio>
   <audio id="sound4" src="audio/motherboard.mp3"></audio>
   <audio id="sound5" src="audio/nic.mp3"></audio>
@@ -80,17 +81,29 @@ a-scene{display:none}
 
   <a-gltf-model id="model0" class="clickable" data-src="models/arduino.glb" src="" position="0 0 0" rotation="0 0 0" scale="0.7 0.7 0.7"></a-gltf-model>
 
-  <a-entity position="0.2 0.4 0">
-    <a-text value="Digital Pins" color="lime" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 0.18 0.21"></a-text>
-    <a-box position="0 0.002 0.21" rotation="0 0 90" width="0.25" height="0.01" depth="0.01" color="lime"></a-box>
+  <a-entity position="0.3 0.4 0">
+    <a-text value="Digital Pins" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 0.18 0.21"></a-text>
+    <a-box position="0 0.002 0.21" rotation="0 0 90" width="0.25" height="0.01" depth="0.01" color="black"></a-box>
   </a-entity>
   <a-entity position="-0.4 0.25 0">
-    <a-text value="USB Port" color="lime" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0.1 0.23 0.21"></a-text>
-    <a-box position="0.08 0 0.27" rotation="0 0 90" width="0.25" height="0.01" depth="0.01" color="lime"></a-box>
+    <a-text value="USB Port" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0.1 0.23 0.21"></a-text>
+    <a-box position="0.08 0 0.27" rotation="0 0 90" width="0.25" height="0.01" depth="0.01" color="black"></a-box>
   </a-entity>
   <a-entity position="-0.3 -0.3 0">
-    <a-text value="Power Jack" color="orange" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 -0.15 0.23"></a-text>
-    <a-cylinder position="0 0 0.23" radius="0.005" height="0.25" color="orange"></a-cylinder>
+    <a-text value="Power Jack" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 -0.15 0.23"></a-text>
+    <a-cylinder position="0 0 0.23" radius="0.005" height="0.25" color="black"></a-cylinder>
+  </a-entity>
+  <a-entity position="-0.07 0.4 0">
+    <a-text value="Ground Pin" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 0.18 0.21"></a-text>
+    <a-box position="0 0.002 0.21" rotation="0 0 90" width="0.25" height="0.01" depth="0.01" color="black"></a-box>
+  </a-entity>
+  <a-entity position="0.33 -0.32 0">
+    <a-text value="Analog Pins" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 -0.11 0.21"></a-text>
+    <a-box position="0 0.002 0.21" rotation="0 0 90" width="0.18" height="0.01" depth="0.01" color="black"></a-box>
+  </a-entity>
+  <a-entity position="0.07 -0.35 0">
+    <a-text value="Volt Pin" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 -0.18 0.21"></a-text>
+    <a-box position="0 0.003 0.21" rotation="0 0 90" width="0.25" height="0.01" depth="0.01" color="black"></a-box>
   </a-entity>
 
 </a-entity>
@@ -101,13 +114,13 @@ a-scene{display:none}
   <a-gltf-model id="model1" class="clickable" data-src="models/breadboard.glb" src="" position="0 0 0" rotation="90 0 0" scale="0.0006 0.0006 0.0006"></a-gltf-model>
 
   <a-entity position="0 -0.22 0">
-    <a-text value="Power Rails" color="#ff4444" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 -0.15 0"></a-text>
-    <a-cylinder position="0 0 0" radius="0.005" height="0.25" color="#ff4444"></a-cylinder>
+    <a-text value="Power Rails" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 -0.15 0"></a-text>
+    <a-cylinder position="0 0 0" radius="0.005" height="0.25" color="black"></a-cylinder>
   </a-entity>
   <a-entity position="0.18 0.1 0.05">
-    <a-text value="Terminal Strip" color="lime" align="center" look-at="[camera]" scale="0.28 0.25 0.28" position="0.3 0.23 0"></a-text>
-    <a-box position="0 0.22 0" width="0.2" height="0.005" depth="0.005" color="lime"></a-box>
-    <a-box position="-0.1 0.08 0" width="0.005" height="0.28" depth="0.005" color="lime"></a-box>
+    <a-text value="Terminal Strip" color="black" align="center" look-at="[camera]" scale="0.28 0.25 0.28" position="0.3 0.23 0"></a-text>
+    <a-box position="0 0.22 0" width="0.2" height="0.005" depth="0.005" color="black"></a-box>
+    <a-box position="-0.1 0.08 0" width="0.005" height="0.28" depth="0.005" color="black"></a-box>
   </a-entity>
   <a-entity position="0 0.1 0.05">
     <a-text value="Central Gap" color="black" align="center" look-at="[camera]" scale="0.28 0.25 0.28" position="-0.43 0.27 0"></a-text>
@@ -123,67 +136,88 @@ a-scene{display:none}
   <a-gltf-model id="model2" class="clickable" data-src="models/cpu.glb" src="" position="0 0 0" rotation="90 0 0" scale="0.47 0.47 0.47"></a-gltf-model>
 
   <a-entity position="0.18 0.1 0.05">
-    <a-text value="Heat Spreader" color="white" align="center" look-at="[camera]" scale="0.29 0.29 0.29" position="0 0.7 0"></a-text>
-    <a-cylinder position="0.01 0.4 0" radius="0.008" height="0.5" color="white"></a-cylinder>
+    <a-text value="Heat Spreader" color="black" align="center" look-at="[camera]" scale="0.29 0.29 0.29" position="0 0.7 0"></a-text>
+    <a-cylinder position="0.01 0.4 0" radius="0.008" height="0.5" color="black"></a-cylinder>
   </a-entity>
   <a-entity position="0.1 0.2 0">
-    <a-text value="PCB Board" color="lime" align="center" look-at="[camera]" scale="0.3 0.3 0.3" position="0.1 -1.05 0"></a-text>
-    <a-cylinder position="0.1 -0.85 0" radius="0.004" height="0.3" color="lime"></a-cylinder>
+    <a-text value="PCB Board" color="black" align="center" look-at="[camera]" scale="0.3 0.3 0.3" position="0.1 -1.05 0"></a-text>
+    <a-cylinder position="0.1 -0.85 0" radius="0.004" height="0.3" color="black"></a-cylinder>
   </a-entity>
   <a-entity position="0 -0.35 0">
-    <a-text value="Pins" color="yellow" align="center" look-at="[camera]" scale="0.3 0.3 0.3" position="-0.1 -0.45 0"></a-text>
-    <a-cylinder position="-0.1 -0.3 0" radius="0.004" height="0.2" color="yellow"></a-cylinder>
+    <a-text value="Pins" color="black" align="center" look-at="[camera]" scale="0.3 0.3 0.3" position="-0.1 -0.45 0"></a-text>
+    <a-cylinder position="-0.1 -0.3 0" radius="0.004" height="0.2" color="black"></a-cylinder>
   </a-entity>
 
 </a-entity>
 
-<!-- ================= INDEX 3 — HDD ================= -->
-<a-entity class="target" mindar-image-target="targetIndex:3" data-sound="sound3" data-name="HDD">
+<!-- ================= INDEX 3 — GPU ================= -->
+<a-entity class="target" mindar-image-target="targetIndex:3" data-sound="soundGpu" data-name="GPU">
+
+  <a-gltf-model id="modelGpu" class="clickable" data-src="models/gpu.glb" src="" position="0 0 0" rotation="90 0 0" scale="0.2 0.2 0.2"></a-gltf-model>
+
+  <a-entity position="-0.1 0.2 0.05">
+    <a-text value="GPU Chip" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 0.3 0"></a-text>
+    <a-cylinder position="0 0.15 0" radius="0.005" height="0.2" color="black"></a-cylinder>
+  </a-entity>
+  
+  <a-entity position="0.1 -0.1 0">
+    <a-text value="PCIe Connector" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0.1 -0.45 0"></a-text>
+    <a-cylinder position="0.1 -0.3 0" radius="0.005" height="0.2" color="black"></a-cylinder>
+  </a-entity>
+
+</a-entity>
+
+<!-- ================= INDEX 4 — HDD ================= -->
+<a-entity class="target" mindar-image-target="targetIndex:4" data-sound="sound3" data-name="HDD">
 
   <a-gltf-model id="model3" class="clickable" data-src="models/hdd.glb" src="" position="0 0 0" rotation="-90 90 90" scale="0.0012 0.0012 0.0012"></a-gltf-model>
 
   <a-entity position="-0.1 -0.15 0">
-    <a-text value="Magnetic Disk" color="#00e5ff" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="-0.1 -0.15 0.02"></a-text>
-    <a-box position="-0.1 0 0.02" width="0.25" rotation="0 0 90" height="0.01" depth="0.01" color="#00e5ff"></a-box>
+    <a-text value="Magnetic Disk" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="-0.1 -0.15 0.02"></a-text>
+    <a-box position="-0.1 0 0.02" width="0.25" rotation="0 0 90" height="0.01" depth="0.01" color="black"></a-box>
   </a-entity>
-  <a-entity position="0.1 0.19 0">
-    <a-text value="Connector Pad" color="lime" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0.1 0.16 0.02"></a-text>
-    <a-box position="0.1 0 0.02" width="0.25" rotation="0 0 90" height="0.01" depth="0.01" color="lime"></a-box>
+  <a-entity position="-0.04 0.23 0">
+    <a-text value="Head" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0.1 0.16 0.02"></a-text>
+    <a-box position="0.1 0 0.02" width="0.25" rotation="0 0 90" height="0.01" depth="0.01" color="black"></a-box>
+  </a-entity>
+  <a-entity position="0.3 0.02 0">
+    <a-text value="Connector Pad" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0.32 0 0.02"></a-text>
+    <a-box position="0 0 0.02" width="0.25" height="0.01" depth="0.01" color="black"></a-box>
   </a-entity>
   <a-entity position="0.25 -0.07 0">
-    <a-text value="Actuator Arm" color="lime" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0.32 0 0.02"></a-text>
-    <a-box position="0 0 0.02" width="0.25" height="0.01" depth="0.01" color="lime"></a-box>
+    <a-text value="Actuator Arm" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0.32 0 0.02"></a-text>
+    <a-box position="0 0 0.02" width="0.25" height="0.01" depth="0.01" color="black"></a-box>
   </a-entity>
 
 </a-entity>
 
-<!-- ================= INDEX 4 — MOTHERBOARD ================= -->
-<a-entity class="target" mindar-image-target="targetIndex:4" data-sound="sound4" data-name="Motherboard">
+<!-- ================= INDEX 5 — MOTHERBOARD ================= -->
+<a-entity class="target" mindar-image-target="targetIndex:5" data-sound="sound4" data-name="Motherboard">
 
   <a-gltf-model id="model4" class="clickable" data-src="models/motherboard.glb" src="" position="0 0 0" rotation="-360 90 90" scale="0.08 0.08 0.08"></a-gltf-model>
 
   <a-entity position="-0.1 -0.15 0">
-      <a-text value="CPU Socket" color="#00e5ff" align="center" look-at="[camera]" scale="0.22 0.28 0.28" position="-0.1 -0.4 0.1"></a-text>
-      <a-box position="-0.08 -0.1 0.1" rotation="0 0 90" width="0.5" height="0.01" depth="0.01" color="#00e5ff"></a-box>
+      <a-text value="CPU Socket" color="black" align="center" look-at="[camera]" scale="0.22 0.28 0.28" position="-0.1 -0.4 0.1"></a-text>
+      <a-box position="-0.08 -0.1 0.1" rotation="0 0 90" width="0.5" height="0.01" depth="0.01" color="black"></a-box>
     </a-entity>
     <a-entity position="-0.1 0.43 0">
-      <a-text value="RAM Slots" color="lime" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="-0.1 0.1 0.08"></a-text>
-      <a-box position="-0.1 -0.1 0.08" rotation="0 0 90" width="0.25" height="0.01" depth="0.01" color="#00e5ff"></a-box>
+      <a-text value="RAM Slots" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="-0.1 0.1 0.08"></a-text>
+      <a-box position="-0.1 -0.1 0.08" rotation="0 0 90" width="0.25" height="0.01" depth="0.01" color="black"></a-box>
     </a-entity>
     <a-entity position="0.45 0.01 0">
-      <a-text value="PCIe Slots" color="yellow" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0.33 0.01 0.08"></a-text>
-      <a-box position="0.05 0 0.08" width="0.25" height="0.01" depth="0.01" color="#00e5ff"></a-box>
+      <a-text value="PCIe Slots" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0.33 0.01 0.08"></a-text>
+      <a-box position="0.05 0 0.08" width="0.25" height="0.01" depth="0.01" color="black"></a-box>
     </a-entity>
 
 </a-entity>
 
-<!-- ================= INDEX 5 — NIC ================= -->
-<a-entity class="target" mindar-image-target="targetIndex:5" data-sound="sound5" data-name="NIC">
+<!-- ================= INDEX 6 — NIC ================= -->
+<a-entity class="target" mindar-image-target="targetIndex:6" data-sound="sound5" data-name="NIC">
 
   <a-gltf-model id="model5" class="clickable" data-src="models/nic.glb" src="" position="0 0 0" rotation="-90 0 180" scale="0.35 0.35 0.35"></a-gltf-model>
 
   <a-entity position="-0.4 0.04 0">
-    <a-text value="Ethernet Port" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="1.2 0.13 0.2"></a-text>
+    <a-text value="Ethernet Port" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="1.25 0.13 0.2"></a-text>
     <a-box position="0.9 0.13 0.2" width="0.3" height="0.01" depth="0.01" color="black"></a-box>
   </a-entity>
   <a-entity position="0.4 0.18 0.2">
@@ -193,14 +227,14 @@ a-scene{display:none}
 
 </a-entity>
 
-<!-- ================= INDEX 6 — RAM ================= -->
-<a-entity class="target" mindar-image-target="targetIndex:6" data-sound="sound6" data-name="RAM">
+<!-- ================= INDEX 7 — RAM ================= -->
+<a-entity class="target" mindar-image-target="targetIndex:7" data-sound="sound6" data-name="RAM">
 
   <a-gltf-model id="model6" class="clickable" data-src="models/ram.glb" src="" position="0 0 0" rotation="90 0 0" scale="0.08 0.08 0.08"></a-gltf-model>
 
   <a-entity position="0.18 0.1 0.05">
-    <a-text value="Memory Chips" color="white" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 0.22 0"></a-text>
-    <a-cylinder position="0 0.04 0" radius="0.005" height="0.25" color="white"></a-cylinder>
+    <a-text value="Memory Chips" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 0.22 0"></a-text>
+    <a-cylinder position="0 0.04 0" radius="0.005" height="0.25" color="black"></a-cylinder>
   </a-entity>
   <a-entity position="0.22 -0.3 0">
     <a-text value="Contact Pins" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 -0.1 0"></a-text>
@@ -213,38 +247,37 @@ a-scene{display:none}
 
 </a-entity>
 
-<!-- ================= INDEX 7 — ROUTER ================= -->
-<a-entity class="target" mindar-image-target="targetIndex:7" data-sound="sound7" data-name="Router">
+<!-- ================= INDEX 8 — ROUTER ================= -->
+<a-entity class="target" mindar-image-target="targetIndex:8" data-sound="sound7" data-name="Router">
 
   <a-gltf-model id="model7" class="clickable" data-src="models/router.glb" src="" position="0 0 0" rotation="180 90 145" scale="0.003 0.003 0.003"></a-gltf-model>
 
-  <a-entity position="-0.1 -0.2 0.25">
-    <a-text value="WAN Port" color="yellow" align="center" look-at="[camera]" scale="0.28 0.23 0.28" position="0.13 -0.22 0"></a-text>
-    <a-cylinder position="0.1 -0.07 0" radius="0.005" height="0.2" color="yellow"></a-cylinder>
+  <a-entity position="-0.13 -0.2 0.25">
+    <a-text value="WAN Port" color="black" align="center" look-at="[camera]" scale="0.28 0.23 0.28" position="0.09 -0.22 0"></a-text>
+    <a-cylinder position="0.1 -0.07 0" radius="0.005" height="0.2" color="black"></a-cylinder>
   </a-entity>
   <a-entity position="0.17 -0.2 0.25">
-    <a-text value="Reset Button" color="green" align="center" look-at="[camera]" scale="0.28 0.23 0.28" position="0.13 -0.22 0"></a-text>
-    <a-cylinder position="0.1 -0.07 0" radius="0.005" height="0.2" color="green"></a-cylinder>
+    <a-text value="Reset Button" color="black" align="center" look-at="[camera]" scale="0.28 0.23 0.28" position="0.13 -0.16 0"></a-text>
+    <a-cylinder position="0.1 -0.07 0" radius="0.005" height="0.15" color="black"></a-cylinder>
   </a-entity>
 
 </a-entity>
 
-<!-- ================= INDEX 8 — SSD ================= -->
-<a-entity class="target" mindar-image-target="targetIndex:8" data-sound="sound8" data-name="SSD">
+<!-- ================= INDEX 9 — SSD ================= -->
+<a-entity class="target" mindar-image-target="targetIndex:9" data-sound="sound8" data-name="SSD">
 
   <a-gltf-model id="model8" class="clickable" data-src="models/ssd.glb" src="" position="0 0 0" rotation="-90 90 90" scale="0.25 0.25 0.25"></a-gltf-model>
 
   <a-entity position="-0.04 -0.22 0">
-    <a-text value="DRAM Cache" color="#00e5ff" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="-0.03 -0.15 0.02"></a-text>
-    <a-box position="0 0 0.02" width="0.25" rotation="0 0 90" height="0.01" depth="0.01" color="#00e5ff"></a-box>
+    <a-text value="DRAM Cache" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="-0.03 -0.15 0.02"></a-text>
+    <a-box position="0 0 0.02" width="0.25" rotation="0 0 90" height="0.01" depth="0.01" color="black"></a-box>
   </a-entity>
   <a-entity position="-0.5 0.2 0">
-    <a-text value="M.2 Connector Pin" color="#00e5ff" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 0.17 0.02"></a-text>
-    <a-box position="0 0 0.02" width="0.25" rotation="0 0 90" height="0.01" depth="0.01" color="#00e5ff"></a-box>
+    <a-text value="M.2 Connector Pin" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 0.17 0.02"></a-text>
+    <a-box position="0 0 0.02" width="0.25" rotation="0 0 90" height="0.01" depth="0.01" color="black"></a-box>
   </a-entity>
 
 </a-entity>
-
 </a-scene>
 
 <script>
@@ -264,7 +297,7 @@ startBtn.onclick = async () => {
   // promise only resolves once the file has actually buffered enough
   // to start outputting sound — on iOS Safari that buffering happens
   // over the network and takes real time, during which the audio is
-  // audibly playing before our pause() ever runs. With 9 files awaited
+  // audibly playing before our pause() ever runs. With 10 files awaited
   // one after another, that adds up to several seconds of overlapping
   // audible playback right at startup ("all sounds play at once").
   // Calling play() and pause() back-to-back in the same synchronous
@@ -272,6 +305,7 @@ startBtn.onclick = async () => {
   // letting real audio output start. volume=0 is added as a second
   // safety net, since iOS Safari has a known quirk where `muted = true`
   // doesn't always take effect instantly.
+
   for (const a of document.querySelectorAll("audio")) {
     a.muted = true;
     a.volume = 0;
@@ -290,7 +324,7 @@ startBtn.onclick = async () => {
 
 // Per-target sound + status text + LAZY glb loading.
 // Each target's own model is only fetched the first time that
-// specific target is found — not all 9 up front.
+// specific target is found — not all 10 up front.
 targets.forEach((target) => {
   const audioEl = document.getElementById(target.dataset.sound);
   const name    = target.dataset.name;
