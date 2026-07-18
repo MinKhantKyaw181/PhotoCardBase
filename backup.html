@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8">
 <title>AR Component Scanner</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 
 <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
@@ -81,7 +84,7 @@ a-scene{display:none}
 
   <a-gltf-model id="model0" class="clickable" data-src="models/arduino.glb" src="" position="0 0 0" rotation="0 0 0" scale="0.7 0.7 0.7"></a-gltf-model>
 
-  <a-entity position="0.2 0.4 0">
+  <a-entity position="0.3 0.4 0">
     <a-text value="Digital Pins" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 0.18 0.21"></a-text>
     <a-box position="0 0.002 0.21" rotation="0 0 90" width="0.25" height="0.01" depth="0.01" color="black"></a-box>
   </a-entity>
@@ -92,6 +95,18 @@ a-scene{display:none}
   <a-entity position="-0.3 -0.3 0">
     <a-text value="Power Jack" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 -0.15 0.23"></a-text>
     <a-cylinder position="0 0 0.23" radius="0.005" height="0.25" color="black"></a-cylinder>
+  </a-entity>
+  <a-entity position="-0.07 0.4 0">
+    <a-text value="Ground Pin" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 0.18 0.21"></a-text>
+    <a-box position="0 0.002 0.21" rotation="0 0 90" width="0.25" height="0.01" depth="0.01" color="black"></a-box>
+  </a-entity>
+  <a-entity position="0.33 -0.32 0">
+    <a-text value="Analog Pins" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 -0.11 0.21"></a-text>
+    <a-box position="0 0.002 0.21" rotation="0 0 90" width="0.18" height="0.01" depth="0.01" color="black"></a-box>
+  </a-entity>
+  <a-entity position="0.07 -0.35 0">
+    <a-text value="Volt Pin" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 -0.18 0.21"></a-text>
+    <a-box position="0 0.003 0.21" rotation="0 0 90" width="0.25" height="0.01" depth="0.01" color="black"></a-box>
   </a-entity>
 
 </a-entity>
@@ -141,21 +156,14 @@ a-scene{display:none}
 <!-- ================= INDEX 3 — GPU ================= -->
 <a-entity class="target" mindar-image-target="targetIndex:3" data-sound="soundGpu" data-name="GPU">
 
-  <!-- PLACEHOLDER rotation/scale — adjust after checking how the GLB
-       actually sits, same as was done for the other models. Most
-       models in this project ended up needing rotation="90 0 0" as
-       a starting point, so that's used here as the default guess. -->
-  <a-gltf-model id="modelGpu" class="clickable" data-src="models/gpu.glb" src="" position="0 0 0" rotation="90 0 0" scale="0.5 0.5 0.5"></a-gltf-model>
+  <a-gltf-model id="modelGpu" class="clickable" data-src="models/gpu.glb" src="" position="0 0 0" rotation="90 0 0" scale="0.2 0.2 0.2"></a-gltf-model>
 
-  <a-entity position="0.18 0.15 0.05">
+  <a-entity position="-0.1 0.2 0.05">
     <a-text value="GPU Chip" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0 0.3 0"></a-text>
     <a-cylinder position="0 0.15 0" radius="0.005" height="0.2" color="black"></a-cylinder>
   </a-entity>
-  <a-entity position="-0.2 0.1 0.1">
-    <a-text value="Cooling Fan" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="-0.2 0.25 0"></a-text>
-    <a-cylinder position="-0.2 0.12 0" radius="0.005" height="0.2" color="black"></a-cylinder>
-  </a-entity>
-  <a-entity position="0.1 -0.3 0">
+  
+  <a-entity position="0.1 -0.1 0">
     <a-text value="PCIe Connector" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0.1 -0.45 0"></a-text>
     <a-cylinder position="0.1 -0.3 0" radius="0.005" height="0.2" color="black"></a-cylinder>
   </a-entity>
@@ -171,9 +179,13 @@ a-scene{display:none}
     <a-text value="Magnetic Disk" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="-0.1 -0.15 0.02"></a-text>
     <a-box position="-0.1 0 0.02" width="0.25" rotation="0 0 90" height="0.01" depth="0.01" color="black"></a-box>
   </a-entity>
-  <a-entity position="0.1 0.19 0">
-    <a-text value="Connector Pad" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0.1 0.16 0.02"></a-text>
+  <a-entity position="-0.04 0.23 0">
+    <a-text value="Head" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0.1 0.16 0.02"></a-text>
     <a-box position="0.1 0 0.02" width="0.25" rotation="0 0 90" height="0.01" depth="0.01" color="black"></a-box>
+  </a-entity>
+  <a-entity position="0.3 0.02 0">
+    <a-text value="Connector Pad" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0.32 0 0.02"></a-text>
+    <a-box position="0 0 0.02" width="0.25" height="0.01" depth="0.01" color="black"></a-box>
   </a-entity>
   <a-entity position="0.25 -0.07 0">
     <a-text value="Actuator Arm" color="black" align="center" look-at="[camera]" scale="0.28 0.28 0.28" position="0.32 0 0.02"></a-text>
@@ -244,12 +256,12 @@ a-scene{display:none}
   <a-gltf-model id="model7" class="clickable" data-src="models/router.glb" src="" position="0 0 0" rotation="180 90 145" scale="0.003 0.003 0.003"></a-gltf-model>
 
   <a-entity position="-0.13 -0.2 0.25">
-    <a-text value="WAN Port" color="black" align="center" look-at="[camera]" scale="0.28 0.23 0.28" position="0.11 -0.22 0"></a-text>
+    <a-text value="WAN Port" color="black" align="center" look-at="[camera]" scale="0.28 0.23 0.28" position="0.09 -0.22 0"></a-text>
     <a-cylinder position="0.1 -0.07 0" radius="0.005" height="0.2" color="black"></a-cylinder>
   </a-entity>
   <a-entity position="0.17 -0.2 0.25">
-    <a-text value="Reset Button" color="black" align="center" look-at="[camera]" scale="0.28 0.23 0.28" position="0.13 -0.22 0"></a-text>
-    <a-cylinder position="0.1 -0.07 0" radius="0.005" height="0.2" color="black"></a-cylinder>
+    <a-text value="Reset Button" color="black" align="center" look-at="[camera]" scale="0.28 0.23 0.28" position="0.13 -0.16 0"></a-text>
+    <a-cylinder position="0.1 -0.07 0" radius="0.005" height="0.15" color="black"></a-cylinder>
   </a-entity>
 
 </a-entity>
@@ -281,21 +293,7 @@ const targets     = document.querySelectorAll(".target");
 let currentAudio = null;
 
 startBtn.onclick = async () => {
-  // Unlock autoplay for every audio element (required on iOS/Android
-  // before any audio.play() call will succeed later).
-  //
-  // IMPORTANT: play() must NOT be awaited here. Awaiting it means the
-  // promise only resolves once the file has actually buffered enough
-  // to start outputting sound — on iOS Safari that buffering happens
-  // over the network and takes real time, during which the audio is
-  // audibly playing before our pause() ever runs. With 10 files awaited
-  // one after another, that adds up to several seconds of overlapping
-  // audible playback right at startup ("all sounds play at once").
-  // Calling play() and pause() back-to-back in the same synchronous
-  // tick (no await) registers the user-gesture unlock without ever
-  // letting real audio output start. volume=0 is added as a second
-  // safety net, since iOS Safari has a known quirk where `muted = true`
-  // doesn't always take effect instantly.
+ 
 
   for (const a of document.querySelectorAll("audio")) {
     a.muted = true;
@@ -345,6 +343,12 @@ targets.forEach((target) => {
     statusDiv.textContent = "🔍 Scanning…";
   });
 });
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
 </script>
 
 </body>

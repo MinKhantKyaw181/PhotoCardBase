@@ -9,7 +9,7 @@
 
 
 <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+<script src="libs/mindar-image-aframe.prod.js"></script>
 
 <style>
 body{margin:0;background:#000;font-family:Arial}
@@ -38,6 +38,31 @@ body{margin:0;background:#000;font-family:Arial}
   white-space:nowrap; max-width:90vw; text-align:center;
 }
 a-scene{display:none}
+#permError{
+  position:fixed; inset:0; z-index:20;
+  background:rgba(0,0,0,0.94); color:#fff;
+  display:none; flex-direction:column; align-items:center; justify-content:center;
+  padding:24px; text-align:center; gap:14px;
+}
+#permError h3{color:#ff5c5c; margin:0}
+#permError ol{text-align:left; max-width:340px; line-height:1.6; font-size:0.95rem}
+#permError button{
+  padding:12px 28px; border:none; border-radius:24px;
+  background:#00ffcc; font-weight:bold; cursor:pointer; margin-top:8px;
+}
+#debugPanel{
+  position:fixed; bottom:0; left:0; right:0; z-index:100;
+  max-height:40vh; overflow-y:auto;
+  background:rgba(0,0,0,0.85); color:#0f0;
+  font-family:monospace; font-size:11px; padding:8px;
+  white-space:pre-wrap; word-break:break-all; display:none;
+  border-top:1px solid #0f0;
+}
+#debugToggle{
+  position:fixed; bottom:6px; right:6px; z-index:101;
+  background:#333; color:#0f0; border:1px solid #0f0;
+  border-radius:6px; padding:4px 8px; font-size:11px; opacity:0.7;
+}
 </style>
 </head>
 
@@ -49,6 +74,21 @@ a-scene{display:none}
   <button id="startBtn">Start AR</button>
 </div>
 <div id="status">🔍 Scanning…</div>
+
+<div id="permError">
+  <h3>📵 Camera ကို ဖွင့်ခွင့်မရပါ</h3>
+  <p id="permErrorMsg">Camera permission လိုအပ်ပါတယ်။</p>
+  <ol>
+    <li>Chrome address bar ဘေးက 🔒 (padlock) ကို နှိပ်ပါ</li>
+    <li>Permissions → Camera → <b>Allow</b> ရွေးပါ</li>
+    <li>Camera option မတွေ့ရင်: Android Settings → Apps → Chrome → Permissions → Camera ကို <b>Allow</b> လုပ်ပါ</li>
+    <li>ပြီးရင် ဒီစာမျက်နှာကို reload (ပြန်ဖွင့်) လုပ်ပါ</li>
+  </ol>
+  <button id="retryBtn">ပြန်စမ်းမည်</button>
+</div>
+
+<button id="debugToggle">Debug</button>
+<div id="debugPanel"></div>
 
 <a-scene id="scene"
   mindar-image="imageTargetSrc: targets.mind;"
@@ -288,26 +328,79 @@ const startBtn    = document.getElementById("startBtn");
 const startScreen = document.getElementById("startScreen");
 const scene       = document.getElementById("scene");
 const statusDiv   = document.getElementById("status");
+const permError   = document.getElementById("permError");
+const permErrorMsg= document.getElementById("permErrorMsg");
+const retryBtn    = document.getElementById("retryBtn");
+const debugPanel  = document.getElementById("debugPanel");
+const debugToggle = document.getElementById("debugToggle");
 const targets     = document.querySelectorAll(".target");
 
 let currentAudio = null;
 
-startBtn.onclick = async () => {
-  // Unlock autoplay for every audio element (required on iOS/Android
-  // before any audio.play() call will succeed later).
-  //
-  // IMPORTANT: play() must NOT be awaited here. Awaiting it means the
-  // promise only resolves once the file has actually buffered enough
-  // to start outputting sound — on iOS Safari that buffering happens
-  // over the network and takes real time, during which the audio is
-  // audibly playing before our pause() ever runs. With 10 files awaited
-  // one after another, that adds up to several seconds of overlapping
-  // audible playback right at startup ("all sounds play at once").
-  // Calling play() and pause() back-to-back in the same synchronous
-  // tick (no await) registers the user-gesture unlock without ever
-  // letting real audio output start. volume=0 is added as a second
-  // safety net, since iOS Safari has a known quirk where `muted = true`
-  // doesn't always take effect instantly.
+// ---------- On-screen debug logger (so we can see errors without USB) ----------
+function dlog(msg) {
+  const line = document.createElement("div");
+  line.textContent = "[" + new Date().toISOString().substr(11,8) + "] " + msg;
+  debugPanel.appendChild(line);
+  debugPanel.scrollTop = debugPanel.scrollHeight;
+}
+debugToggle.onclick = () => {
+  debugPanel.style.display = debugPanel.style.display === "block" ? "none" : "block";
+};
+window.addEventListener("error", (e) => {
+  dlog("❌ JS Error: " + e.message + " @ " + (e.filename||"").split("/").pop() + ":" + e.lineno);
+});
+window.addEventListener("unhandledrejection", (e) => {
+  dlog("❌ Promise rejection: " + (e.reason && e.reason.message ? e.reason.message : e.reason));
+});
+dlog("Page loaded. UA: " + navigator.userAgent);
+dlog("Secure context (https): " + window.isSecureContext);
+dlog("A-Frame loaded: " + (typeof AFRAME !== "undefined"));
+if (typeof AFRAME !== "undefined") {
+  dlog("MindAR component registered: " + (!!AFRAME.components["mindar-image"]));
+}
+scene.addEventListener("loaded", () => {
+  dlog("a-scene 'loaded' event fired. mindar-image-system present: " + (!!scene.systems["mindar-image-system"]));
+});
+
+// If the MindAR script tag itself failed to load (CDN blocked), warn immediately
+// instead of waiting for the user to press Start and hit a confusing crash.
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    if (typeof AFRAME === "undefined" || !AFRAME.components["mindar-image"]) {
+      dlog("❌ MindAR script never registered — likely CDN blocked (cdn.jsdelivr.net).");
+      showPermError("AR engine (MindAR) script ကို load မရပါ — Internet/WiFi က cdn.jsdelivr.net ကို block ထားနိုင်ပါတယ်။ Network ပြောင်းပြီး page ကို ပြန် reload လုပ်ကြည့်ပါ။");
+    }
+  }, 3000);
+});
+
+async function startAR() {
+  permError.style.display = "none";
+  dlog("Start AR button pressed");
+
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    dlog("❌ getUserMedia not available on this browser/context");
+    showPermError("ဒီ browser က camera access ကို support မလုပ်ပါ (https မဟုတ်လို့ ဖြစ်နိုင်သလို browser အဟောင်းလည်း ဖြစ်နိုင်ပါတယ်)။");
+    return;
+  }
+
+  // Pre-check that targets.mind is actually reachable — a 404/CORS failure
+  // here causes MindAR to silently fail into a black screen with camera
+  // permission looking "fine".
+  try {
+    const res = await fetch("targets.mind", { method: "HEAD", cache: "no-store" });
+    dlog("targets.mind HEAD status: " + res.status);
+    if (!res.ok) {
+      showPermError("targets.mind ဖိုင် (status " + res.status + ") ရှာမတွေ့ပါ — GitHub Pages ပေါ်တင်ထားတဲ့ file structure ကို စစ်ပါ။");
+      startScreen.style.display = "flex";
+      return;
+    }
+  } catch (fetchErr) {
+    dlog("❌ targets.mind fetch failed: " + fetchErr.message);
+    showPermError("targets.mind ဖိုင်ကို load မရပါ: " + fetchErr.message);
+    startScreen.style.display = "flex";
+    return;
+  }
 
   for (const a of document.querySelectorAll("audio")) {
     a.muted = true;
@@ -320,10 +413,74 @@ startBtn.onclick = async () => {
   }
 
   startScreen.style.display = "none";
-  scene.style.display = "block";
-  statusDiv.style.display = "block";
-  await scene.systems["mindar-image-system"].start();
+
+  try {
+    dlog("Requesting getUserMedia (environment camera)...");
+    const testStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+    dlog("✅ getUserMedia succeeded, tracks: " + testStream.getVideoTracks().length);
+    testStream.getTracks().forEach(t => t.stop());
+
+    scene.style.display = "block";
+    statusDiv.style.display = "block";
+
+    if (!scene.systems || !scene.systems["mindar-image-system"]) {
+      dlog("❌ mindar-image-system is undefined — MindAR script did not initialize on this scene.");
+      throw new Error("MINDAR_NOT_LOADED");
+    }
+
+    dlog("Calling mindar-image-system.start()...");
+    await scene.systems["mindar-image-system"].start();
+    dlog("✅ mindar-image-system.start() resolved");
+
+    // Sanity check: did MindAR actually attach a <video> with active frames?
+    setTimeout(() => {
+      const video = document.querySelector("a-scene video");
+      if (!video) {
+        dlog("❌ No <video> element found in a-scene after start()");
+      } else {
+        dlog("Video element found. readyState=" + video.readyState + " paused=" + video.paused + " size=" + video.videoWidth + "x" + video.videoHeight);
+      }
+    }, 1500);
+
+  } catch (err) {
+    dlog("❌ startAR failed: " + err.name + " - " + err.message);
+    console.error("Camera start failed:", err);
+    scene.style.display = "none";
+    statusDiv.style.display = "none";
+
+    if (err.name === "NotAllowedError" || err.name === "SecurityError" || err.name === "PermissionDeniedError") {
+      showPermError("Camera permission ကို ပိတ်ထား/ငြင်းထားလို့ ဖွင့်လို့မရပါ။ အောက်က step တွေအတိုင်း ခွင့်ပြုပေးပါ။");
+    } else if (err.name === "NotFoundError") {
+      showPermError("ဒီစက်မှာ camera ရှာမတွေ့ပါ။");
+    } else if (err.name === "NotReadableError") {
+      showPermError("Camera ကို App တခြားက အသုံးပြုနေလို့ ဖွင့်လို့မရပါ။ တခြား camera app တွေကိုပိတ်ပြီး ပြန်စမ်းကြည့်ပါ။");
+    } else if (err.message === "MINDAR_NOT_LOADED") {
+      showPermError("AR engine (MindAR) script load မအောင်မြင်ပါ — WiFi/mobile data က cdn.jsdelivr.net ကို block ထားနိုင်ပါတယ်။ WiFi မှ mobile data (သို့) mobile data မှ WiFi ပြောင်းပြီး ပြန်စမ်းကြည့်ပါ၊ VPN/Ad-blocker ရှိရင်ပိတ်ကြည့်ပါ။");
+    } else {
+      showPermError("Camera ဖွင့်ရာတွင် error တက်ပါတယ်: " + (err.message || err.name));
+    }
+    startScreen.style.display = "flex";
+  }
+}
+
+function showPermError(msg) {
+  permErrorMsg.textContent = msg;
+  permError.style.display = "flex";
+}
+
+startBtn.onclick = startAR;
+retryBtn.onclick = () => {
+  permError.style.display = "none";
+  startScreen.style.display = "flex";
 };
+
+// If MindAR itself throws a runtime camera error after starting, catch that too.
+scene.addEventListener("arError", (e) => {
+  dlog("❌ arError event fired: " + JSON.stringify(e.detail || {}));
+  scene.style.display = "none";
+  statusDiv.style.display = "none";
+  showPermError("Camera ချိတ်ဆက်မှု ပြတ်တောက်သွားပါတယ်။ Permission ကို double-check လုပ်ပြီး ပြန်စမ်းကြည့်ပါ။");
+});
 
 // Per-target sound + status text + LAZY glb loading.
 // Each target's own model is only fetched the first time that
@@ -361,7 +518,9 @@ targets.forEach((target) => {
 
 <script>
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
+  navigator.serviceWorker.register("service-worker.js").then(reg => {
+    reg.update(); // force check for a newer service-worker.js on every load
+  });
 }
 </script>
 
