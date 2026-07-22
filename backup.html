@@ -3,52 +3,250 @@
 <head>
 <meta charset="utf-8">
 <title>AR Component Scanner</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000000">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 
+<meta name="theme-color" content="#030712">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
 <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+<script src="libs/mindar-image-aframe.prod.js"></script>
 
 <style>
-body{margin:0;background:#000;font-family:Arial}
+:root{
+  --bg-deep:#030712;
+  --bg-panel:#0a1428;
+  --blue-primary:#2f6bff;
+  --cyan-glow:#4ff3ff;
+  --line-blue:#17335c;
+  --text-primary:#eaf2ff;
+  --text-dim:#7d93bb;
+  --danger:#ff4f6d;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg-deep);
+  font-family:'Rajdhani',sans-serif;
+  color:var(--text-primary);
+  overflow:hidden;
+}
+
+a-scene{display:none}
+
+/* ===================== START SCREEN ===================== */
 #startScreen{
   position:fixed; inset:0;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  background:
+    radial-gradient(circle at 50% 22%, rgba(47,107,255,0.28), transparent 55%),
+    repeating-linear-gradient(0deg, rgba(79,243,255,0.05) 0px, rgba(79,243,255,0.05) 1px, transparent 1px, transparent 42px),
+    repeating-linear-gradient(90deg, rgba(79,243,255,0.05) 0px, rgba(79,243,255,0.05) 1px, transparent 1px, transparent 42px),
+    linear-gradient(160deg, #030712 0%, #061029 55%, #030712 100%);
   display:flex; flex-direction:column;
   justify-content:center; align-items:center;
-  z-index:10; color:white; text-align:center; padding:0 20px
+  z-index:10; text-align:center; padding:0 20px;
+  overflow:hidden;
 }
+
+/* ambient scanning sweep across the whole screen */
+#startScreen::before{
+  content:"";
+  position:absolute; left:0; right:0; top:-140px; height:140px;
+  background:linear-gradient(to bottom, transparent 0%, rgba(79,243,255,0.10) 50%, transparent 100%);
+  animation: scanSweep 5s linear infinite;
+  pointer-events:none;
+}
+@keyframes scanSweep{
+  0%{ transform:translateY(0); }
+  100%{ transform:translateY(calc(100vh + 140px)); }
+}
+
+/* viewfinder frame — the signature element: this is a scanner, so the
+   idle screen itself looks like a camera reticle waiting to lock on */
+.hud-frame{
+  position:relative;
+  z-index:2;
+  padding:48px 56px;
+}
+.corner{
+  position:absolute;
+  width:26px; height:26px;
+  border:2px solid var(--cyan-glow);
+  filter:drop-shadow(0 0 6px rgba(79,243,255,0.7));
+}
+.corner-tl{ top:0; left:0; border-right:none; border-bottom:none; }
+.corner-tr{ top:0; right:0; border-left:none; border-bottom:none; }
+.corner-bl{ bottom:0; left:0; border-right:none; border-top:none; }
+.corner-br{ bottom:0; right:0; border-left:none; border-top:none; }
+
+#startScreen h2{
+  font-family:'Orbitron', sans-serif;
+  font-weight:900;
+  font-size:clamp(1.5rem, 6vw, 2.3rem);
+  letter-spacing:0.09em;
+  text-transform:uppercase;
+  margin:0 0 10px;
+  color:var(--text-primary);
+  text-shadow:0 0 14px rgba(79,243,255,0.55), 0 0 34px rgba(47,107,255,0.4);
+}
+
+#startScreen p{
+  font-family:'Share Tech Mono', monospace;
+  font-size:0.8rem;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  margin:0 0 38px;
+}
+#startScreen p::before{ content:"[ "; color:var(--cyan-glow); }
+#startScreen p::after{ content:" ]"; color:var(--cyan-glow); }
+
 #startBtn{
-  padding:16px 36px;
-  font-size:18px;
+  position:relative;
+  padding:16px 50px;
+  font-family:'Orbitron', sans-serif;
+  font-size:0.95rem;
+  font-weight:700;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:#03101f;
+  background:linear-gradient(135deg, var(--cyan-glow), var(--blue-primary));
   border:none;
-  border-radius:30px;
-  background:#00ffcc;
-  font-weight:bold;
-  margin-top:16px;
-  cursor:pointer
+  cursor:pointer;
+  clip-path:polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  box-shadow:0 0 22px rgba(79,243,255,0.5), 0 0 55px rgba(47,107,255,0.3);
+  transition:transform 0.15s ease, box-shadow 0.15s ease;
 }
+#startBtn:active{
+  transform:scale(0.96);
+  box-shadow:0 0 12px rgba(79,243,255,0.6);
+}
+
+/* ===================== STATUS CHIP ===================== */
 #status{
-  position:fixed; top:20px; left:50%; transform:translateX(-50%);
-  background:rgba(0,0,0,0.75); color:#00ffcc; padding:8px 20px;
-  border-radius:20px; font-size:0.85rem; letter-spacing:1px;
-  z-index:50; display:none; border:1px solid #00ffcc44;
+  position:fixed; top:24px; left:50%; transform:translateX(-50%);
+  font-family:'Share Tech Mono', monospace;
+  font-size:0.78rem; letter-spacing:0.13em; text-transform:uppercase;
+  color:var(--cyan-glow);
+  background:rgba(8,17,34,0.85);
+  border:1px solid rgba(79,243,255,0.4);
+  box-shadow:0 0 16px rgba(79,243,255,0.25), inset 0 0 12px rgba(79,243,255,0.08);
+  backdrop-filter:blur(6px);
+  padding:10px 22px 10px 34px;
+  z-index:50; display:none;
   white-space:nowrap; max-width:90vw; text-align:center;
 }
-a-scene{display:none}
+#status::before{
+  content:"";
+  position:absolute; left:14px; top:50%;
+  width:8px; height:8px; border-radius:50%;
+  background:var(--cyan-glow);
+  box-shadow:0 0 8px var(--cyan-glow);
+  transform:translateY(-50%);
+  animation:pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{ opacity:1; transform:translateY(-50%) scale(1); }
+  50%{ opacity:0.35; transform:translateY(-50%) scale(1.5); }
+}
+
+/* ===================== PERMISSION / ERROR PANEL ===================== */
+#permError{
+  position:fixed; inset:0; z-index:20;
+  background:rgba(3,7,18,0.96);
+  backdrop-filter:blur(4px);
+  display:none; flex-direction:column; align-items:center; justify-content:center;
+  padding:28px; text-align:center; gap:16px;
+}
+#permError .hud-frame{
+  padding:32px 30px;
+  max-width:380px;
+  background:linear-gradient(180deg, rgba(10,20,40,0.6), rgba(10,20,40,0.3));
+  border:1px solid var(--line-blue);
+}
+#permError .corner{ border-color:var(--danger); filter:drop-shadow(0 0 6px rgba(255,79,109,0.6)); }
+
+#permError h3{
+  font-family:'Orbitron', sans-serif;
+  font-size:1.05rem;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--danger);
+  text-shadow:0 0 14px rgba(255,79,109,0.5);
+  margin:0 0 6px;
+}
+#permError p{
+  font-family:'Rajdhani', sans-serif;
+  font-size:0.95rem;
+  color:var(--text-primary);
+  margin:0 0 16px;
+}
+#permError ol{
+  text-align:left;
+  margin:0 0 20px;
+  padding-left:18px;
+  border-left:2px solid var(--line-blue);
+  font-family:'Share Tech Mono', monospace;
+  font-size:0.78rem;
+  line-height:1.8;
+  color:var(--text-dim);
+}
+#permError ol li::marker{ color:var(--cyan-glow); }
+#permError ol b{ color:var(--cyan-glow); font-weight:700; }
+
+#permError button{
+  position:relative;
+  padding:13px 34px;
+  font-family:'Orbitron', sans-serif;
+  font-size:0.85rem;
+  font-weight:700;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:#03101f;
+  background:linear-gradient(135deg, var(--cyan-glow), var(--blue-primary));
+  border:none;
+  cursor:pointer;
+  clip-path:polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  box-shadow:0 0 18px rgba(79,243,255,0.4);
+}
 </style>
 </head>
 
 <body>
 
 <div id="startScreen">
-  <h2>🧩 Augmented Reality</h2>
-  <p>Point camera at photos</p>
-  <button id="startBtn">Start AR</button>
+  <div class="hud-frame">
+    <span class="corner corner-tl"></span>
+    <span class="corner corner-tr"></span>
+    <span class="corner corner-bl"></span>
+    <span class="corner corner-br"></span>
+    <h2>Augmented Reality</h2>
+    <p>Point camera at photos</p>
+    <button id="startBtn">Start AR</button>
+  </div>
 </div>
-<div id="status">🔍 Scanning…</div>
+<div id="status">Scanning…</div>
+
+<div id="permError">
+  <div class="hud-frame">
+    <span class="corner corner-tl"></span>
+    <span class="corner corner-tr"></span>
+    <span class="corner corner-bl"></span>
+    <span class="corner corner-br"></span>
+    <h3>Camera ကို ဖွင့်ခွင့်မရပါ</h3>
+    <p id="permErrorMsg">Camera permission လိုအပ်ပါတယ်။</p>
+    <ol>
+      <li>Chrome address bar ဘေးက 🔒 (padlock) ကို နှိပ်ပါ</li>
+      <li>Permissions → Camera → <b>Allow</b> ရွေးပါ</li>
+      <li>Camera option မတွေ့ရင်: Android Settings → Apps → Chrome → Permissions → Camera ကို <b>Allow</b> လုပ်ပါ</li>
+      <li>ပြီးရင် ဒီစာမျက်နှာကို reload (ပြန်ဖွင့်) လုပ်ပါ</li>
+    </ol>
+    <button id="retryBtn">ပြန်စမ်းမည်</button>
+  </div>
+</div>
 
 <a-scene id="scene"
   mindar-image="imageTargetSrc: targets.mind;"
@@ -288,12 +486,36 @@ const startBtn    = document.getElementById("startBtn");
 const startScreen = document.getElementById("startScreen");
 const scene       = document.getElementById("scene");
 const statusDiv   = document.getElementById("status");
+const permError   = document.getElementById("permError");
+const permErrorMsg= document.getElementById("permErrorMsg");
+const retryBtn    = document.getElementById("retryBtn");
 const targets     = document.querySelectorAll(".target");
 
 let currentAudio = null;
 
-startBtn.onclick = async () => {
- 
+async function startAR() {
+  permError.style.display = "none";
+
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    showPermError("ဒီ browser က camera access ကို support မလုပ်ပါ (https မဟုတ်လို့ ဖြစ်နိုင်သလို browser အဟောင်းလည်း ဖြစ်နိုင်ပါတယ်)။");
+    return;
+  }
+
+  // Pre-check that targets.mind is actually reachable — a 404/CORS failure
+  // here causes MindAR to silently fail into a black screen with camera
+  // permission looking "fine".
+  try {
+    const res = await fetch("targets.mind", { method: "HEAD", cache: "no-store" });
+    if (!res.ok) {
+      showPermError("targets.mind ဖိုင် (status " + res.status + ") ရှာမတွေ့ပါ — GitHub Pages ပေါ်တင်ထားတဲ့ file structure ကို စစ်ပါ။");
+      startScreen.style.display = "flex";
+      return;
+    }
+  } catch (fetchErr) {
+    showPermError("targets.mind ဖိုင်ကို load မရပါ: " + fetchErr.message);
+    startScreen.style.display = "flex";
+    return;
+  }
 
   for (const a of document.querySelectorAll("audio")) {
     a.muted = true;
@@ -306,10 +528,57 @@ startBtn.onclick = async () => {
   }
 
   startScreen.style.display = "none";
-  scene.style.display = "block";
-  statusDiv.style.display = "block";
-  await scene.systems["mindar-image-system"].start();
+
+  try {
+    const testStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+    testStream.getTracks().forEach(t => t.stop());
+
+    scene.style.display = "block";
+    statusDiv.style.display = "block";
+
+    if (!scene.systems || !scene.systems["mindar-image-system"]) {
+      throw new Error("MINDAR_NOT_LOADED");
+    }
+
+    await scene.systems["mindar-image-system"].start();
+
+  } catch (err) {
+    console.error("Camera start failed:", err);
+    // scene.style.display = "none";
+    // statusDiv.style.display = "none";
+
+    // if (err.name === "NotAllowedError" || err.name === "SecurityError" || err.name === "PermissionDeniedError") {
+    //   showPermError("Camera permission ကို ပိတ်ထား/ငြင်းထားလို့ ဖွင့်လို့မရပါ။ အောက်က step တွေအတိုင်း ခွင့်ပြုပေးပါ။");
+    // } else if (err.name === "NotFoundError") {
+    //   showPermError("ဒီစက်မှာ camera ရှာမတွေ့ပါ။");
+    // } else if (err.name === "NotReadableError") {
+    //   showPermError("Camera ကို App တခြားက အသုံးပြုနေလို့ ဖွင့်လို့မရပါ။ တခြား camera app တွေကိုပိတ်ပြီး ပြန်စမ်းကြည့်ပါ။");
+    // } else if (err.message === "MINDAR_NOT_LOADED") {
+    //   showPermError("AR engine (MindAR) script load မအောင်မြင်ပါ — WiFi/mobile data က cdn.jsdelivr.net ကို block ထားနိုင်ပါတယ်။ WiFi မှ mobile data (သို့) mobile data မှ WiFi ပြောင်းပြီး ပြန်စမ်းကြည့်ပါ၊ VPN/Ad-blocker ရှိရင်ပိတ်ကြည့်ပါ။");
+    // } else {
+    //   showPermError("Camera ဖွင့်ရာတွင် error တက်ပါတယ်: " + (err.message || err.name));
+    // }
+    // startScreen.style.display = "flex";
+  }
+}
+
+function showPermError(msg) {
+  permErrorMsg.textContent = msg;
+  permError.style.display = "flex";
+}
+
+startBtn.onclick = startAR;
+retryBtn.onclick = () => {
+  permError.style.display = "none";
+  startScreen.style.display = "flex";
 };
+
+// If MindAR itself throws a runtime camera error after starting, catch that too.
+scene.addEventListener("arError", () => {
+  scene.style.display = "none";
+  statusDiv.style.display = "none";
+  showPermError("Camera ချိတ်ဆက်မှု ပြတ်တောက်သွားပါတယ်။ Permission ကို double-check လုပ်ပြီး ပြန်စမ်းကြည့်ပါ။");
+});
 
 // Per-target sound + status text + LAZY glb loading.
 // Each target's own model is only fetched the first time that
@@ -345,11 +614,7 @@ targets.forEach((target) => {
 });
 </script>
 
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
-}
-</script>
+
 
 </body>
 </html>
